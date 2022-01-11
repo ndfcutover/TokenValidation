@@ -23,12 +23,12 @@ namespace TokenValidation
             Task<bool> task = tokenManagement.IsTokenValid(Token);
             bool TokenIsValid = task.Result;
 
-            if (!TokenIsValid)
-            {
-                Console.WriteLine("Token non valido");
-                Console.ReadKey();
-            }
-                
+            if (!TokenIsValid)            
+                Console.WriteLine("Token non valido");                
+            else
+                Console.WriteLine("Ok - Token valido");
+
+            Console.ReadKey();
         }
 
         internal class TokenManagement
