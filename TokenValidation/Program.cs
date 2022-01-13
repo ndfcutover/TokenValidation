@@ -64,21 +64,11 @@ namespace TokenValidation
             Console.WriteLine(exp);
             Console.WriteLine("---------------------------------------------------------------------------------");
             
-            var issueAt = claim.ValidFrom;
-            var expire = new TokenExpire();
-
-            Console.WriteLine(String.Format("New ExpireAt: {0}", expire.GetJwtDuration(14400, issueAt)));
+            var issueAt = claim.ValidFrom;            
+            Console.WriteLine(String.Format("New ExpireAt: {0}", tokenManagement.GetJwtDuration(14400, issueAt)));
             Console.WriteLine("---------------------------------------------------------------------------------");
 
             Console.ReadKey();
-        }
-
-        internal class TokenExpire
-        {
-            public DateTime GetJwtDuration(long seconds, DateTime issueAt)
-            {
-                return issueAt.AddSeconds(seconds).ToUniversalTime();
-            }
         }
 
         internal class TokenManagement
@@ -123,6 +113,11 @@ namespace TokenValidation
                     Console.WriteLine();
                     return false;
                 }
+            }
+            
+            public DateTime GetJwtDuration(long seconds, DateTime issueAt)
+            {
+                return issueAt.AddSeconds(seconds).ToUniversalTime();
             }
         }
     }
