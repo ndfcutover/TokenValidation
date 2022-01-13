@@ -57,17 +57,28 @@ namespace TokenValidation
             var _kid = String.Format("{0}  {1}", "Kid", kid);
             Console.WriteLine(_kid);
 
-            var exp = String.Format("{0}  {1}", "Expire", Convert.ToInt64(claims.FirstOrDefault(item => item.Type == "exp").Value.ToString()));            
+            var claim = tokenHandler.ReadJwtToken(Token);
+
+            var iat = String.Format("{0}  {1} ({2})", "IssueAt", Convert.ToInt64(claims.FirstOrDefault(item => item.Type == "iat").Value.ToString()), claim.ValidFrom.ToString());
+            Console.WriteLine(iat);
+
+            var exp = String.Format("{0}  {1} ({2})", "ExpireAt", Convert.ToInt64(claims.FirstOrDefault(item => item.Type == "exp").Value.ToString()), claim.ValidTo.ToString());            
             Console.WriteLine(exp);
-            
-            //DateTime.UnixEpoch.AddSeconds(claims.FirstOrDefault(item => item.Type == "exp").Value).ToUniversalTime();
 
-            var c = tokenHandler.ReadJwtToken(Token);       
+            var issueAt = claim.ValidFrom;
+            var expire = new TokenExpire();
 
-            Console.WriteLine(c.ValidFrom.ToString());
-            Console.WriteLine(c.ValidTo.ToString());
+            Console.WriteLine(String.Format("New ExpireAt {0}", expire.GetJwtDuration(14400, issueAt)));
 
             Console.ReadKey();
+        }
+
+        internal class TokenExpire
+        {
+            public DateTime GetJwtDuration(long seconds, DateTime issueAt)
+            {
+                return issueAt.AddSeconds(seconds).ToUniversalTime();
+            }
         }
 
         internal class TokenManagement
@@ -91,8 +102,6 @@ namespace TokenValidation
                     IssuerSigningKey = key,
                     ValidateAudience = false,
                     ValidateIssuer = false
-                    //ValidAudience = jwtSettings.AudienceSso, // Your API Audience, can be disabled via ValidateAudience = false
-                    //ValidIssuer = jwtSettings.IssuerSSo      // Your token issuer, can be disabled via ValidateIssuer = false
                 };
 
                 var isValid = ValidateToken(jwtToken, validationParameters);
