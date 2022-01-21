@@ -51,6 +51,12 @@ namespace TokenValidation
             var employeeNumber = String.Format("{0}: {1}", "EmployeeNumber", claims.FirstOrDefault(item => item.Type == "employeeNumber").Value);
             Console.WriteLine(employeeNumber);
 
+            string userName = null;
+            if (claims.Any(x => x.Type.Contains("name")))
+                userName = String.Format("{0}: {1}", "User", claims.FirstOrDefault(item => item.Type == "name").Value);
+            
+            Console.WriteLine(userName.IsNullOrEmpty() ? "Not specified" : userName);
+
             string email = null;
             if (claims.Any(x => x.Type.Contains("email")))
                 email = String.Format("{0}: {1}", "Email", claims.FirstOrDefault(item => item.Type == "email").Value);
